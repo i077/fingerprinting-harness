@@ -6,6 +6,7 @@ authors = ["Imran Hossain <imran@case.edu>", "Zubair Mukhi <zubair@case.edu>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+selenium = "^3.141.0"
 
 [tool.poetry.dev-dependencies]
 
