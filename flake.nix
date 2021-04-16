@@ -26,7 +26,12 @@
         devShell =
           let pyEnv = pkgs.poetry2nix.mkPoetryEnv { projectDir = ./.; };
           in pkgs.devshell.mkShell {
-            packages = with pkgs; [ pyEnv poetry geckodriver openjdk zap ];
+            packages = with pkgs; [ pyEnv geckodriver openjdk ];
+
+            commands = [
+              { package = pkgs.zap; }
+              { package = pkgs.poetry; }
+            ];
           };
       });
 }
