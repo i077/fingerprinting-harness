@@ -8,6 +8,8 @@ authors = ["Imran Hossain <imran@case.edu>", "Zubair Mukhi <zubair@case.edu>"]
 python = "^3.8"
 selenium = "^3.141.0"
 typer = "^0.3.2"
+python-dotenv = "^0.17.0"
+requests = "^2.25.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
