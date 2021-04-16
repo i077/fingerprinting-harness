@@ -11,7 +11,7 @@ API = os.getenv('API')
 
 def enable_zap(site: str, base_path: str):
     path = f'{base_path}/{site}/{site}'
-    subprocess.run(args=['zap', "-daemon", '-newsession', path, '-config', f'api.key={API}'])
+    subprocess.run(args=['zap', '-daemon', '-newsession', path, '-config', f'api.key={API}'])
 
 def kill_zap():
     requests.get(f"http://localhost:8080/JSON/core/action/shutdown/?apikey={API}")
