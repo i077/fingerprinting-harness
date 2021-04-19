@@ -41,7 +41,8 @@ def get_zap_cert(target_file='rootcert.crt') -> str:
     certificate_text = cert.content.decode('utf-8')
     with open(target_file, mode='w') as target:
         target.write(certificate_text)
-    return certificate_textg
+    return certificate_text
+
 
 if __name__ == '__main__':
     daemon = start_zap_daemon()
