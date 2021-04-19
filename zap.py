@@ -9,12 +9,32 @@ load_dotenv(add_to_env)
 
 API = os.getenv('API')
 
-def enable_zap(site: str, base_path: str):
+
+'''
+Programattically enables the Zed Attack Proxy using specified API key
+'''
+def enable_zap(site: str, base_path: str) -> None:
     path = f'{base_path}/{site}/{site}'
     subprocess.run(args=['zap', '-daemon', '-newsession', path, '-config', f'api.key={API}'])
 
-def kill_zap():
+
+'''
+Sends the ZAP shutdown request using specified API key
+'''
+def kill_zap() -> None:
     requests.get(f"http://localhost:8080/JSON/core/action/shutdown/?apikey={API}")
 
-if __name__ == '__main__':
-    enable_zap('cnn.com', '/home/zubair/zap/cnn2')
+
+'''
+Creates a file pointing to the root certificate at the specified location
+'''
+def get_zap_cert(target_file: str) -> str:
+    cert = requests.get(f'http://localhost:8080/OTHER/core/other/rootcert/?apikey={API}')
+    print(f'Certificate Response: {cert.status_code}')
+    certificate_text = cert.content.decode('utf-8')
+    with open(target_file, mode='w') as target:
+        target.write(certificate_text)
+    return certificate_text
+
+# if __name__ == '__main__':
+    # enable_zap('cnn.com', '/home/zubair/zap/cnn2')

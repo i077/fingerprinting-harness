@@ -1,6 +1,9 @@
 # dotenv
 .env
 
+# root certificate
+*.crt
+
 # VS Code ignore
 .vscode/
 
