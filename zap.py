@@ -1,6 +1,7 @@
 import os
 import subprocess
 import time
+from zapv2 import ZAPv2
 
 import requests
 from dotenv import load_dotenv
@@ -10,7 +11,7 @@ add_to_env = os.path.join(working_directory, '.env')
 load_dotenv(add_to_env)
 
 API = os.getenv('API')
-
+zed = ZAPv2(apikey=API)
 
 '''
 Programattically enables the Zed Attack Proxy using specified API key. Is considered a blocking call because ZAP never terminates
@@ -29,20 +30,29 @@ def start_zap_daemon() -> subprocess.Popen:
 Sends the ZAP shutdown request using specified API key
 '''
 def shutdown_zap(daemon:subprocess.Popen) -> None:
-    requests.get(f"http://localhost:8080/JSON/core/action/shutdown/?apikey={API}")
+    zed.core.shutdown(apikey=API)
+    # requests.get(f"http://localhost:8080/JSON/core/action/shutdown/?apikey={API}")
     daemon.wait()
+    zed.core.access_url()
 
 
 '''
 Creates a file pointing to the root certificate at the specified location
 '''
 def get_zap_cert(target_file='rootcert.crt') -> str:
-    cert = requests.get(f'http://localhost:8080/OTHER/core/other/rootcert/?apikey={API}')
-    print(f'Certificate Response: {cert.status_code}')
-    certificate_text = cert.content.decode('utf-8')
+    certificate_text = zed.core.rootcert(apikey=API)
     with open(target_file, mode='w') as target:
         target.write(certificate_text)
     return certificate_text
+
+
+'''
+Creates a new Zap session in working directory/zap/<site>/<site>.session
+'''
+def make_new_zap_session(site: str):
+    path = f'{os.getcwd()}/zap/{site}/{site}'
+    zed.core.new_session(apikey=API, name=path)
+    return
 
 
 if __name__ == '__main__':
