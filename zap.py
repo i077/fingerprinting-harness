@@ -18,6 +18,7 @@ Programattically enables the Zed Attack Proxy using specified API key. Is consid
 def start_zap_daemon() -> subprocess.Popen:
     # subprocess.run(args=['zap', '-daemon', '-config', f'api.key={API}'])
     daemon = subprocess.Popen(args=['zap', '-daemon', '-config', f'api.key={API}'])
+    print(f"daemon started; pid={daemon.pid}")
     return daemon
 # def enable_zap(site: str, base_path: str) -> None:
 #     path = f'{base_path}/{site}/{site}'
@@ -27,7 +28,7 @@ def start_zap_daemon() -> subprocess.Popen:
 '''
 Sends the ZAP shutdown request using specified API key
 '''
-def kill_zap(daemon:subprocess.Popen) -> None:
+def shutdown_zap(daemon:subprocess.Popen) -> None:
     requests.get(f"http://localhost:8080/JSON/core/action/shutdown/?apikey={API}")
     daemon.wait()
 
@@ -49,5 +50,5 @@ if __name__ == '__main__':
     time.sleep(10)
     print(get_zap_cert())
     time.sleep(10)
-    kill_zap(daemon)
+    shutdown_zap(daemon)
 
