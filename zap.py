@@ -35,7 +35,6 @@ def shutdown_zap(daemon: subprocess.Popen) -> None:
     zed.core.shutdown(apikey=API)
     # requests.get(f"http://localhost:8080/JSON/core/action/shutdown/?apikey={API}")
     daemon.wait()
-    zed.core.access_url()
 
 
 def get_zap_cert(target_file='zaproot.crt') -> str:
