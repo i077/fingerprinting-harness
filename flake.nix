@@ -26,7 +26,7 @@
         devShell =
           let pyEnv = pkgs.poetry2nix.mkPoetryEnv { projectDir = ./.; };
           in pkgs.devshell.mkShell {
-            packages = with pkgs; [ pyEnv geckodriver openjdk ];
+            packages = with pkgs; [ pyEnv firefox geckodriver openjdk ];
 
             commands = [
               { package = pkgs.zap; }
