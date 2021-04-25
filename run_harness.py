@@ -16,6 +16,9 @@ def main(
     headless: bool = typer.Option(True, help="Whether to run the browser headlessly"),
     threads: int = typer.Option(1, help="How many concurrent browsers to use"),
     sites_path: str = typer.Option("sites.txt", help="Path to list of sites to use"),
+    out_path: str = typer.Option(
+        "requests.json", help="Path to write requests json to"
+    ),
 ):
     # Get list of sites & divide up for each thread
     sites: List[str]
@@ -32,11 +35,15 @@ def main(
 
     # Wait for all threads to finish
     for runner in runners:
-        runner.thread.join()
+        if runner.thread.is_alive:
+            runner.thread.join(60)
 
-    # Save lists to a JSON file
-    with open("requests.json", "w") as f:
-        json.dump(requests_by_site, f)
+        # Save lists to a JSON file every so often
+        with open(out_path, "w") as f:
+            json.dump(requests_by_site, f)
+        with open(out_path, "r") as f:
+            t = json.load(f)
+            typer.secho(f"Saved progress: {len(t)}/{len(sites)} visited.")
 
 
 # Class to hold and run a browser instance. Used for threading
@@ -59,12 +66,16 @@ class Runner:
         # Get list of requests for each site
         for idx, site in enumerate(self.site_list):
             self.log(f"Visiting {site} ({idx+1}/{len(self.site_list)})")
+            requests_list: list = []
+
             try:
+                # Visit the site!
                 self.driver.get(site)
                 requests_list: list = self.driver.execute_script(GET_REQ_JS)
-                requests_by_site[site] = requests_list
             except Exception as e:
                 self.log(f"Error when visiting {site}: {e}")
+
+            requests_by_site[site] = requests_list
         self.log("Closing browser.")
         self.driver.close()
 
