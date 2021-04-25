@@ -57,11 +57,14 @@ class Runner:
 
     def open_sites(self):
         # Get list of requests for each site
-        for site in self.site_list:
-            self.log(f"Visiting {site}")
-            self.driver.get(site)
-            requests_list: list = self.driver.execute_script(GET_REQ_JS)
-            requests_by_site[site] = requests_list
+        for idx, site in enumerate(self.site_list):
+            self.log(f"Visiting {site} ({idx+1}/{len(self.site_list)})")
+            try:
+                self.driver.get(site)
+                requests_list: list = self.driver.execute_script(GET_REQ_JS)
+                requests_by_site[site] = requests_list
+            except Exception as e:
+                self.log(f"Error when visiting {site}: {e}")
         self.log("Closing browser.")
         self.driver.close()
 
