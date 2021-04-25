@@ -1,4 +1,3 @@
-import itertools
 import json
 from typing import Dict, List
 from urllib.parse import urlparse
@@ -34,9 +33,18 @@ def main(
     }
 
     # Analyze each site
+    results: Dict[str, List[str]] = {}
     for site, req_list in requests_by_site.items():
         tracker_list: List[str] = get_site_trackers(req_list, tracker_dict)
-        typer.secho(f"{site} made {len(tracker_list)} requests to fingerprinters.")
+        typer.secho(f"{site}: {tracker_list}")
+        results[site] = tracker_list
+
+    typer.secho(
+        f"Overall, {len([v for v in results.values() if v])}/{len(results.values())} sites loaded fingerprinting scripts."
+    )
+
+    with open("results.json", "w") as f:
+        json.dump(results, f)
 
 
 def get_site_trackers(
