@@ -24,9 +24,15 @@ def main(
         sites = [l.strip() for l in lines]
     typer.secho(f"Found {len(sites)} site(s) to visit.")
 
+    runners: List[Runner] = []
     for i in range(threads):
         runner = Runner(site_list=sites[i::threads], headless=headless)
         runner.thread.start()
+        runners.append(runner)
+
+    # Wait for all threads to finish
+    for runner in runners:
+        runner.thread.join()
 
     # Save lists to a JSON file
     with open("requests.json", "w") as f:
