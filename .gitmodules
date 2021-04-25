@@ -1,0 +1,3 @@
+[submodule "disconnect-tracking"]
+	path = disconnect-tracking
+	url = https://github.com/disconnectme/disconnect-tracking-protection
